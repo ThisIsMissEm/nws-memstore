@@ -1,0 +1,48 @@
+From d65ceae92c763ee6a2abc50cd8292d738617a46f Mon Sep 17 00:00:00 2001
+From: Kensaku KOMATSU <kensaku.komatsu@gmail.com>
+Date: Thu, 25 Nov 2010 20:43:08 +0900
+Subject: [PATCH] Fix object mismatch from server.manager to server.
+
+---
+ lib/nws-memstore.js |   13 ++++++++++---
+ 1 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/lib/nws-memstore.js b/lib/nws-memstore.js
+index 9b1d641..9da6bf3 100644
+--- a/lib/nws-memstore.js
++++ b/lib/nws-memstore.js
+@@ -4,15 +4,22 @@
+ -----------------------------------------------*/
+ 
+ exports.attachTo = function(server){
+-  server.manager.on("connection", function(c){
++  //updated by Kensaku KOMATSU(2011-11-25)
++  //server.manager.on("connection", function(c){
++  server.on("connection", function(c){
++    console.log("memstore: connection");
+     c.memstore = new memStore();
+   });
+   
+-  server.manager.on("close", function(c){
++  //updated by Kensaku KOMATSU(2011-11-25)
++  //server.manager.on("close", function(c){
++  server.on("close", function(c){
+     if(c.memstore){
+       c.memstore._destroy();
+     }
+   });
++
++  console.log('attach finished');
+   
+   return server;
+ };
+@@ -81,4 +88,4 @@ function memStore(){
+       data = {};
+     }
+   };
+-};
+\ No newline at end of file
++};
+-- 
+1.7.3.1
+
